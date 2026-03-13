@@ -1,0 +1,145 @@
+ 
+
+<div class="frame-color-option"  id="frame-color-option"> 
+  <label class="form__label"> Frame Color:</label>
+
+  <div class="frame-color-swatches">
+
+    {% assign frame_colors = "White,Natural Wood,Dark Wood,Black" | split: "," %}
+
+    {% for color in frame_colors %}
+
+      {% assign color_handle = color | handle %}
+
+      <label class="frame-swatch frame-swatch--{{ color_handle }}">
+        <input
+          type="radio"
+          name="properties[Frame Color]"
+          value="{{ color }}"
+          form="{{ product_form_id }}"
+          {% if forloop.first %}checked{% endif %}
+        >
+
+        <span class="swatch-color"></span>
+
+        {{ color }}
+      </label>
+
+    {% endfor %}
+
+  </div>
+</div> 
+<style>
+  .frame-color-swatches{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.frame-swatch{
+display:flex;
+flex-direction:column;
+align-items:center;
+cursor:pointer;
+font-size:12px;
+}
+
+.frame-swatch input{
+display:none;
+}
+
+.swatch-color{
+width:32px;
+height:32px;
+border-radius:50%;
+display:block;
+margin-bottom:5px;
+border:2px solid transparent;
+}
+
+/* Swatch colors */
+.frame-swatch--white .swatch-color{
+background:#FFFFFF;
+border:1px solid #f5e4cb;
+}
+
+.frame-swatch--natural-wood .swatch-color{
+background:#D8B07A;
+}
+
+.frame-swatch--dark-wood .swatch-color{
+background:#5A3A22;
+}
+
+.frame-swatch--black .swatch-color{
+background:#000000;
+}
+
+/* Selected state */
+.frame-swatch input:checked + .swatch-color{
+border:2px solid #f5e4cb;
+}
+
+ 
+</style>
+
+ 
+ <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const frameColor = document.getElementById("frame-color-option");
+
+  function checkMaterial() {
+
+    const selected =
+      document.querySelector('input[name="Materials:"]:checked') ||
+      document.querySelector('input[name="Matériels:"]:checked') ||
+      document.querySelector('input[name="Materiali:"]:checked');
+
+    if (!selected) return;
+
+    const frameInputs = frameColor.querySelectorAll('input[name="properties[Frame Color]"]');
+
+    if (
+      selected.value === "Unframed Print" ||
+      selected.value === "Impression sans cadre" ||
+      selected.value === "Stampa senza cornice"
+    ) {
+
+      frameColor.style.display = "none";
+
+      // uncheck all frame color radios
+      frameInputs.forEach(input => {
+        input.checked = false;
+      });
+
+    } else {
+
+      frameColor.style.display = "block";
+
+      // check first option again if none selected
+      const checked = frameColor.querySelector('input[name="properties[Frame Color]"]:checked');
+      if (!checked && frameInputs.length) {
+        frameInputs[0].checked = true;
+      }
+
+    }
+  }
+
+  // run on load
+  checkMaterial();
+
+  // listen to material radios
+  document.querySelectorAll(
+    'input[name="Materials:"], input[name="Matériels:"], input[name="Materiali:"]'
+  ).forEach((radio) => {
+    radio.addEventListener("change", checkMaterial);
+  });
+
+});
+ 
+</script>
+
+ 
